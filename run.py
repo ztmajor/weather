@@ -42,7 +42,7 @@ def run_immediate(config, score_config):
     # get all places score to 20(default)/24(if night mode) this day
     for place in config.place_name:
         print("-------------------- place :", place, "--------------------")
-        weather_data = get_now_data(args.year, args.month, args.day, args.hour, place)
+        weather_data = get_now_data(args.year, args.month, args.day, args.hour, place,config.window)
         valid_data = weather_data[config.attributes_list].values.astype(np.float)
         valid_data = en_preprocess(valid_data)
         valid_outputs = test(config, valid_data)
