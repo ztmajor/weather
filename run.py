@@ -5,8 +5,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from Util.draw import draw_h
-from Util.adj import idx2place
-from Util.tool import en_preprocess, unnoramlization, get_now_data, route_recommendation
+from Util.adj import idx2chinese_place
+from Util.tool import en_preprocess, unnoramlization, get_now_data, route_recommendation, get_final_score
 from validpreModel import ValidConfig, ValidScoreConfig, test, test_score
 
 
@@ -74,7 +74,7 @@ def run_days():
 
 
 if __name__ == '__main__':
-    res_scores = 0
+    weather_scores = 0
     if args.immediate:
         print("-------------------- immediately --------------------")
         attributes = ["temperature", "dew", "sealevelpressure", "wind dir", "wind speed", "cloud", "one", "six", "score"]
@@ -82,7 +82,7 @@ if __name__ == '__main__':
         # set training config
         config = ValidConfig("weather", "weather_LSTM_00180")
         config.attributes_list = attributes
-        config.attributes_num = len(attributes) - 1
+        config.in_dim = len(attributes) - 1
         score_config = ValidScoreConfig("score", "score_00100")
         score_config.attributes_list = attributes
         score_config.attributes_num = len(attributes) - 1
@@ -90,20 +90,24 @@ if __name__ == '__main__':
         # 9-20
         if args.nightmode:
             config.future_pred = 24 - args.hour
-            res_scores = run_immediate(config, score_config)
+            weather_scores = run_immediate(config, score_config)
         elif args.nightmode is False and args.hour > 20:
             print("今天太晚了！改日再玩吧")
             # run_days()
         else:
             config.future_pred = 20 - max(args.hour, 9)
-            res_scores = run_immediate(config, score_config)
+            weather_scores = run_immediate(config, score_config)
     else:
         print("not immediately")
         run_days()
 
     print("-------------------- pred finish --------------------")
-    print(res_scores)
-    print(res_scores.shape)
+    print(weather_scores)
+    print(weather_scores.shape)
+
+    # get final scores
+    res_scores = get_final_score(weather_scores)
+
     route = route_recommendation(res_scores)
     print("route recommendation:")
     for i, r in enumerate(route):

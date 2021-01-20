@@ -53,7 +53,6 @@ class ValidScoreConfig(object):
 def test(config, test_seq):
     logger = open(config.log_path, mode='w', encoding='UTF8', buffering=1)
     net = weather_LSTM(input_size=config.in_dim,
-                       attribute_size=config.attributes_num,
                        hidden_dim=config.hidden_dim,
                        output_size=config.out_dim)
     print(net, file=logger)
@@ -94,7 +93,7 @@ def test_score(config, test_seq):
 if __name__ == '__main__':
     print("------------ 1 load training data ------------\n")
     # weather_data = pd.read_csv("Dataset/weather_train.csv")
-    weather_data = pd.read_csv("Dataset/places/weather_valid.csv")
+    weather_data = pd.read_csv("Dataset/weather_valid.csv")
     print(weather_data.head())
 
     print("------------ 2 set useful attributes ------------\n")
@@ -102,7 +101,7 @@ if __name__ == '__main__':
 
     # set training config
     config = ValidConfig("weather", "weather_LSTM_00180")
-    config.attributes_num = len(attributes) - 1
+    config.in_dim = len(attributes) - 1
 
     valid_data = weather_data[attributes].values.astype(np.float)
     print("data length = {:d} | attribute names = {}".format(len(valid_data), attributes))

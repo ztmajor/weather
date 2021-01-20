@@ -75,13 +75,8 @@ def de_preprocess(data):
     return data
 
 
-# def get_now_data(year, month, day, hour, place_name):
-#     # TODO 解决按照时间，景点搜索数据（从此时刻往回数config.window条数据）
-#     data = pd.read_csv("Dataset/places/weather_{}.csv".format(place_name))
-#     return data
-
 def get_now_data(year, month, day, hour, place_name, window=12):
-    data = pd.read_csv("Dataset/places/weather_{}.csv".format(place_name))
+    data = pd.read_csv("Dataset/weather_{}.csv".format(place_name))
     pre_data = pd.DataFrame(columns=data.columns)
     data = data.set_index(["month","day","hour"])
     now = datetime.datetime(int(year), int(month), int(day), int(hour)) + datetime.timedelta(hours=-window)
@@ -98,6 +93,10 @@ def route_recommendation(scores):
     route = [1, 2, 3]
     return route
 
+
+def get_final_score(weather_score):
+    final_score = weather_score
+    return final_score
 
 
 if __name__ == "__main__":

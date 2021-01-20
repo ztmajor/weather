@@ -12,7 +12,7 @@ class TrainConfig(object):
         # training parameter
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         self.num_epochs = 180
-        self.rpt_freq = 20
+        self.rpt_freq = 2
 
         # model info
         self.name = name
@@ -22,10 +22,9 @@ class TrainConfig(object):
 
         # model parameter
         self.window = 12
-        self.in_dim = 3
-        self.attributes_num = 3
+        self.in_dim = 8
         self.hidden_dim = 128
-        self.out_dim = 3
+        self.out_dim = 8
 
         # learning rate parameter
         self.learning_rate = 1e-3
@@ -45,7 +44,7 @@ class TrainScoreConfig(object):
         self.log_path = "Results/Logger/train_{}_{}.txt".format(self.name, self.num_epochs)
 
         # model parameter
-        self.attributes_num = 3
+        self.attributes_num = 8
         self.out_dim = 6
 
         # learning rate parameter
@@ -55,7 +54,6 @@ class TrainScoreConfig(object):
 def train_weather(config, data_seq):
     logger = open(config.log_path, mode='w', encoding='UTF8', buffering=1)
     net = weather_LSTM(input_size=config.in_dim,
-                       attribute_size=config.attributes_num,
                        hidden_dim=config.hidden_dim,
                        output_size=config.out_dim)
     print("------------ net ------------\n", net, file=logger)
@@ -65,7 +63,6 @@ def train_weather(config, data_seq):
         loss = 0.0
         for i, data in enumerate(data_seq, 1):
             seq, labels = data
-            optimizer.zero_grad()
             net.hidden_cell = (torch.zeros(1, 1, config.hidden_dim), torch.zeros(1, 1, config.hidden_dim))
 
             weather_seq = seq[:, :-1]
@@ -114,7 +111,10 @@ def train_score(config, data_seq):
 
 if __name__ == '__main__':
     print("\n------------ 1 load training data ------------")
-    weather_data = pd.read_csv("Dataset/places/weather_train.csv")
+    # place_name = ["city_museum", "spin_museum", "memorial", "yuhua", "niushou", "confucius", "zhongshan", "president", "ginkgo", "zoo"]
+    place_name = ["city_museum"]
+    # for place in place_name:
+    weather_data = pd.read_csv("Dataset/weather_city_museum.csv")
     print("training data:\n", weather_data.head())
     print("training attributes:", weather_data.columns)
 
@@ -124,7 +124,7 @@ if __name__ == '__main__':
 
     # set training config
     config = TrainConfig("weather")
-    config.attributes_num = len(attributes) - 1
+    config.in_dim = len(attributes) - 1
     config_score = TrainScoreConfig("score")
     config_score.attributes_num = len(attributes) - 1
 
