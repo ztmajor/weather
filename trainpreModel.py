@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import torch
 import torch.nn as nn
-from Util.tool import create_inout_sequences, en_preprocess
+from Util.tool import create_inout_sequences, norm
 from Model.model import weather_LSTM, score_model
 
 
@@ -131,7 +131,15 @@ if __name__ == '__main__':
     train_data = weather_data[attributes].values.astype(np.float)
     print("training data length = {:d} | attribute names = {}".format(len(train_data), attributes))
 
-    train_data = en_preprocess(train_data)
+    train_data["temperature"]       = train_data["temperature"].apply(lambda x: norm(x, -100, 400))
+    train_data["dew"]               = train_data["dew"].apply(lambda x: norm(x, -200, 300))
+    train_data["sealevelpressure"]  = train_data["sealevelpressure"].apply(lambda x: norm(x, 0, 15000))
+    train_data["wind dir"]          = train_data["wind dir"].apply(lambda x: norm(x, 0, 360))
+    train_data["wind speed"]        = train_data["wind speed"].apply(lambda x: norm(x, 0, 100))
+    train_data["cloud"]             = train_data["cloud"].apply(lambda x: norm(x, 0, 10))
+    train_data["one"]               = train_data["one"].apply(lambda x: norm(x, 0, 200))
+    train_data["six"]               = train_data["six"].apply(lambda x: norm(x, 0, 200))
+
     inout_seq = create_inout_sequences(train_data, config.window)
     # print("train_inout_seq :", inout_seq)
 

@@ -5,7 +5,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from Util.draw import draw_h
 from Model.model import weather_LSTM, score_model
-from Util.tool import en_preprocess, unnoramlization
+from Util.tool import norm, unnorm
 
 
 class ValidConfig(object):
@@ -107,13 +107,27 @@ if __name__ == '__main__':
     print("data length = {:d} | attribute names = {}".format(len(valid_data), attributes))
 
     print("------------ 3 test ------------\n")
-    valid_data = en_preprocess(valid_data)
+    valid_data["temperature"]       = valid_data["temperature"].apply(lambda x: norm(x, -100, 400))
+    valid_data["dew"]               = valid_data["dew"].apply(lambda x: norm(x, -200, 300))
+    valid_data["sealevelpressure"]  = valid_data["sealevelpressure"].apply(lambda x: norm(x, 0, 15000))
+    valid_data["wind dir"]          = valid_data["wind dir"].apply(lambda x: norm(x, 0, 360))
+    valid_data["wind speed"]        = valid_data["wind speed"].apply(lambda x: norm(x, 0, 100))
+    valid_data["cloud"]             = valid_data["cloud"].apply(lambda x: norm(x, 0, 10))
+    valid_data["one"]               = valid_data["one"].apply(lambda x: norm(x, 0, 200))
+    valid_data["six"]               = valid_data["six"].apply(lambda x: norm(x, 0, 200))
+
     valid_outputs = test(config, valid_data)
     print("valid_inputs_after :\n", valid_outputs)
 
     valid_outputs = np.array(valid_outputs)
-    valid_outputs[:, 2] *= 10
-    valid_outputs = unnoramlization(valid_outputs, 0, 70)
+    valid_data["temperature"] = valid_data["temperature"].apply(lambda x: unnorm(x, -100, 400))
+    valid_data["dew"] = valid_data["dew"].apply(lambda x: unnorm(x, -200, 300))
+    valid_data["sealevelpressure"] = valid_data["sealevelpressure"].apply(lambda x: unnorm(x, 0, 15000))
+    valid_data["wind dir"] = valid_data["wind dir"].apply(lambda x: unnorm(x, 0, 360))
+    valid_data["wind speed"] = valid_data["wind speed"].apply(lambda x: unnorm(x, 0, 100))
+    valid_data["cloud"] = valid_data["cloud"].apply(lambda x: unnorm(x, 0, 10))
+    valid_data["one"] = valid_data["one"].apply(lambda x: unnorm(x, 0, 200))
+    valid_data["six"] = valid_data["six"].apply(lambda x: unnorm(x, 0, 200))
 
     print("actual_valid_outputs :\n", valid_outputs)
 

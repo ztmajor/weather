@@ -45,6 +45,17 @@ def noramlization(data, minVals, maxVals):
     return normData * 100
 
 
+def norm(data, minVals, maxVals):
+    normData = (data - minVals) / (maxVals - minVals)
+    return normData * 10
+
+
+def unnorm(normData, minVals, maxVals):
+    normData /= 10
+    unnormData = normData * (maxVals - minVals) + minVals
+    return unnormData
+
+
 def unnoramlization(data, minVals, maxVals):
     ranges = maxVals - minVals
     m = data.shape[0]
@@ -54,11 +65,8 @@ def unnoramlization(data, minVals, maxVals):
     return normData
 
 
-def en_preprocess(data):
-    # TODO 根据不同的输入进行相关缩放，同时注意调整de_preprocess
-    data[:, 0] *= 2
-    data[:, 2] /= 10
-    data[:2] = noramlization(data[:2], 0, 70)
+def en_preprocess(data, min_val, max_val):
+    data = noramlization(data[:2], min_val, max_val)
     data = torch.from_numpy(data).float()
     # print("data_normalized :", data)
     print(data.type())
