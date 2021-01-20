@@ -3,4 +3,4 @@
   (lstm): LSTM(8, 128)
   (linear): Linear(in_features=128, out_features=8, bias=True)
 )
-Epoch 00001 | Weather loss1 2.05633664n
+Epoch 00001 | Weather loss1 3.66789651n

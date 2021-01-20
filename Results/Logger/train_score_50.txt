@@ -3,13 +3,13 @@
   (score_linear1): Linear(in_features=8, out_features=32, bias=True)
   (score_linear2): Linear(in_features=32, out_features=6, bias=True)
 )
-Epoch 00005 | Score loss 0.21081086
-Epoch 00010 | Score loss 0.15786625
-Epoch 00015 | Score loss 0.09007610
-Epoch 00020 | Score loss 0.13195984
-Epoch 00025 | Score loss 0.15710962
-Epoch 00030 | Score loss 0.11519714
-Epoch 00035 | Score loss 0.12691820
-Epoch 00040 | Score loss 0.13769214
-Epoch 00045 | Score loss 0.11679857
-Epoch 00050 | Score loss 0.14624052
+Epoch 00005 | Score loss 0.28091201
+Epoch 00010 | Score loss 0.10855031
+Epoch 00015 | Score loss 0.07207701
+Epoch 00020 | Score loss 0.06895626
+Epoch 00025 | Score loss 0.05653253
+Epoch 00030 | Score loss 0.05560250
+Epoch 00035 | Score loss 0.03029238
+Epoch 00040 | Score loss 0.03712488
+Epoch 00045 | Score loss 0.03797510
+Epoch 00050 | Score loss 0.01872613

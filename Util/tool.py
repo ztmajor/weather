@@ -6,6 +6,7 @@ import datetime
 
 __all__ = {
     "create_inout_sequences",
+    "create_train_sequences",
     "split_data_set",
     "noramlization",
     "unnoramlization",
@@ -23,6 +24,18 @@ def create_inout_sequences(input_data, tw):
         label = input_data[i+tw:i+tw+1]
         inout_seq.append((seq, label))
     return inout_seq
+
+
+def create_train_sequences(input_data, tw):
+    inout_seq = []
+    label_seq = []
+    L = len(input_data)
+    for i in range(L-tw):
+        seq = input_data[i:i+tw]
+        label = input_data[i+tw:i+tw+1]
+        inout_seq.append(seq[:, :-1])
+        label_seq.append(label[:, :-1])
+    return np.array(inout_seq), np.array(label_seq)
 
 
 def split_data_set(pd_data, attribute_name_list, valid_num=1 * 12):

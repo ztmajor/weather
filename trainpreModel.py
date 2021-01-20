@@ -129,17 +129,17 @@ if __name__ == '__main__':
     # attributes = ['temperature']
 
     # set training config
-    config = TrainConfig("weather")
-    config.in_dim = len(attributes) - 1
+    w_config = TrainConfig("weather")
+    w_config.in_dim = len(attributes) - 1
     config_score = TrainScoreConfig("score")
     config_score.attributes_num = len(attributes) - 1
 
     weather_data = en_preprocess(weather_data)
     train_data = weather_data[attributes].values.astype(np.float)
     print("training data length = {:d} | attribute names = {}".format(len(train_data), attributes))
-    inout_seq = create_inout_sequences(torch.from_numpy(train_data).float(), config.window)
+    inout_seq = create_inout_sequences(torch.from_numpy(train_data).float(), w_config.window)
     # print("train_inout_seq :", inout_seq)
 
     print("\n------------ 3 training ------------")
-    train_weather(config, inout_seq)
-    train_score(config_score, torch.from_numpy(train_data).float())
+    train_weather(w_config, inout_seq)
+    # train_score(config_score, torch.from_numpy(train_data).float())

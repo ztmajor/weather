@@ -54,7 +54,7 @@ def run_immediate(w_config, s_config):
             score_outputs.append(test_score(s_config, torch.tensor(wea, dtype=torch.float)).item())
         # print("valid_inputs_after :", valid_outputs)
 
-        valid_outputs = np.array(valid_outputs)
+        # valid_outputs = np.array(valid_outputs)
         # valid_outputs = de_preprocess(valid_outputs)
 
         # print("actual_valid_outputs :\n", valid_outputs)
@@ -62,9 +62,6 @@ def run_immediate(w_config, s_config):
 
         scores.append(score_outputs)
 
-    # scores = np.array(scores)
-    # print(scores.shape)
-    # print("scores:", scores)
     return np.array(scores)
 
 
