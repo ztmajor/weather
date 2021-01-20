@@ -39,6 +39,18 @@ idx2english_place = {
     9: "zoo"
 }
 
+english_place2idx = {
+    "city_museum": 0,
+    "spin_museum": 1,
+    "memorial": 2,
+    "yuhua": 3,
+    "niushou": 4,
+    "confucius": 5,
+    "zhongshan": 6,
+    "president": 7,
+    "ginkgo": 8,
+    "zoo": 9
+}
 
 adj = [
     [0,17,16,19,8.3,7.8,11,20,16,25,23],
@@ -52,7 +64,6 @@ adj = [
     [16,2.8,0.4,6,8,21,3,6.1,0,37,9],
     [25,38,37,36,30,18,36,42,37,0,44],
     [23,8.5,9.1,13,15,28,11,12,9,44,0],
-
 ]
 
 adj = np.array(adj, dtype=np.float)
