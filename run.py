@@ -101,17 +101,18 @@ if __name__ == '__main__':
         print("not immediately")
         run_days()
 
-    print("-------------------- pred finish --------------------")
     print(weather_scores)
     print(weather_scores.shape)
 
-    # get final scores
+    print("-------------------- pred final scores --------------------")
     res_scores = get_final_score(weather_scores)
+    print(res_scores)
 
+    # get route
+    print("-------------------- route recommendation --------------------")
     route = route_recommendation(res_scores)
-    print("route recommendation:")
     for i, r in enumerate(route):
         if i == 0:
-            print(idx2place[r], end=" ")
+            print(idx2chinese_place[r], end=" ")
         else:
-            print("->", idx2place[r], end=" ")
+            print("->", idx2chinese_place[r], end=" ")

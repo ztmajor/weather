@@ -55,7 +55,7 @@ adj = [
 
 ]
 
-adj = np.array(adj)
+adj = np.array(adj, dtype=np.float)
 print(adj)
 print(idx2chinese_place)
 print(chinese_place2idx)
