@@ -93,7 +93,7 @@ def test_score(config, test_seq):
 if __name__ == '__main__':
     print("------------ 1 load training data ------------\n")
     # weather_data = pd.read_csv("Dataset/weather_train.csv")
-    weather_data = pd.read_csv("Dataset/weather_valid.csv")
+    weather_data = pd.read_csv("Dataset/place/weather_zoo.csv")
     print(weather_data.head())
 
     print("------------ 2 set useful attributes ------------\n")

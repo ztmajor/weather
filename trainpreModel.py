@@ -114,7 +114,7 @@ if __name__ == '__main__':
     # place_name = ["city_museum", "spin_museum", "memorial", "yuhua", "niushou", "confucius", "zhongshan", "president", "ginkgo", "zoo"]
     place_name = ["city_museum"]
     # for place in place_name:
-    weather_data = pd.read_csv("Dataset/weather_city_museum.csv")
+    weather_data = pd.read_csv("Dataset/place/weather_city_museum.csv")
     print("training data:\n", weather_data.head())
     print("training attributes:", weather_data.columns)
 

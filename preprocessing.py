@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 from Util.tool import split_data_set
 
@@ -5,6 +6,12 @@ from Util.tool import split_data_set
 raw_data_file_list = [
     "Dataset/weather.csv",
 ]
+
+
+def merge_data(data_path, name_list):
+    for name in name_list:
+        pd.read_csv(os.path.join(data_path, "weather_" + name + ".csv"))
+
 
 
 if __name__ == "__main__":
