@@ -27,8 +27,8 @@ class ValidConfig(object):
         # predict
         self.future_pred = 12
         self.attributes_list = ["temperature", "dew", "sealevelpressure", "wind dir", "wind speed", "cloud", "one", "six", "score"]
-        # self.place_name = ["city_museum", "spin_museum", "memorial", "yuhua", "niushou", "confucius", "zhongshan", "president", "ginkgo", "zoo"]
-        self.place_name = ["city_museum", "zhongshan", "president", "ginkgo", "zoo"]
+        self.place_name = ["city_museum", "spin_museum", "memorial", "yuhua", "niushou", "confucius", "zhongshan", "president", "ginkgo", "zoo"]
+        # self.place_name = ["zhongshan", "president", "ginkgo", "zoo"]
 
 
 class ValidScoreConfig(object):
