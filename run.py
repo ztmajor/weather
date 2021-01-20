@@ -49,7 +49,7 @@ def run_immediate(w_config, s_config):
         valid_data = weather_data[w_config.attributes_list].values.astype(np.float)
 
         valid_outputs = test(w_config, valid_data)
-        score_outputs= []
+        score_outputs = []
         for wea in valid_outputs:
             score_outputs.append(test_score(s_config, torch.tensor(wea, dtype=torch.float)).item())
         # print("valid_inputs_after :", valid_outputs)
@@ -81,10 +81,10 @@ if __name__ == '__main__':
         attributes = ["temperature", "dew", "sealevelpressure", "wind dir", "wind speed", "cloud", "one", "six", "score"]
         print(attributes)
         # set training config
-        config = ValidConfig("weather", "weather_LSTM_00180")
+        config = ValidConfig("weather", "weather_LSTM_00001")
         config.attributes_list = attributes
         config.in_dim = len(attributes) - 1
-        score_config = ValidScoreConfig("score", "score_00100")
+        score_config = ValidScoreConfig("score", "score_00050")
         score_config.attributes_list = attributes
         score_config.attributes_num = len(attributes) - 1
 
