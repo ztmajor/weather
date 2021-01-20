@@ -2,7 +2,8 @@ import pandas as pd
 import numpy as np
 import torch
 import torch.nn as nn
-from Util.tool import create_inout_sequences, norm
+from torch.utils.data import TensorDataset, DataLoader
+from Util.tool import create_inout_sequences, norm, en_preprocess
 from Model.model import weather_LSTM, score_model
 
 
@@ -11,8 +12,8 @@ class TrainConfig(object):
     def __init__(self, name):
         # training parameter
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        self.num_epochs = 180
-        self.rpt_freq = 2
+        self.num_epochs = 1
+        self.rpt_freq = 1
 
         # model info
         self.name = name
@@ -35,8 +36,8 @@ class TrainScoreConfig(object):
     def __init__(self, name):
         # training parameter
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        self.num_epochs = 100
-        self.rpt_freq = 10
+        self.num_epochs = 50
+        self.rpt_freq = 5
         # model info
         self.name = name
         self.model_name = "score_{:05d}".format(self.num_epochs)
@@ -85,18 +86,23 @@ def train_weather(config, data_seq):
 def train_score(config, data_seq):
     logger = open(config.log_path, mode='w', encoding='UTF8', buffering=1)
     score_net = score_model(input_size=config.attributes_num,
-                            output_size=config.out_dim)
+                            output_size=config.out_dim).to(config.device)
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(score_net.parameters(), lr=config.learning_rate)
     print("------------ score net ------------\n", score_net, file=logger)
+
+    trainset = TensorDataset(data_seq[:, :-1], data_seq[:, -1:])
+    trainloader = torch.utils.data.DataLoader(trainset, batch_size=32, shuffle=True, num_workers=2)
+
     for epoch in range(1, config.num_epochs + 1):
         loss = 0.0
-        for i, data in enumerate(data_seq, 1):
-            weather_seq = data[:-1]
+        for i, data in enumerate(trainloader, 1):
+            weather_seq, score_label = data
+            weather_seq = weather_seq.to(config.device)
+            score_label = score_label.type(torch.LongTensor).to(config.device)
             s_pred = score_net(weather_seq)
 
-            score_label = data[-1:].type(torch.LongTensor)
-            loss = criterion(s_pred.unsqueeze(0), score_label)
+            loss = criterion(s_pred, score_label.squeeze(1))
 
             optimizer.zero_grad()
             loss.backward()
@@ -128,21 +134,12 @@ if __name__ == '__main__':
     config_score = TrainScoreConfig("score")
     config_score.attributes_num = len(attributes) - 1
 
+    weather_data = en_preprocess(weather_data)
     train_data = weather_data[attributes].values.astype(np.float)
     print("training data length = {:d} | attribute names = {}".format(len(train_data), attributes))
-
-    train_data["temperature"]       = train_data["temperature"].apply(lambda x: norm(x, -100, 400))
-    train_data["dew"]               = train_data["dew"].apply(lambda x: norm(x, -200, 300))
-    train_data["sealevelpressure"]  = train_data["sealevelpressure"].apply(lambda x: norm(x, 0, 15000))
-    train_data["wind dir"]          = train_data["wind dir"].apply(lambda x: norm(x, 0, 360))
-    train_data["wind speed"]        = train_data["wind speed"].apply(lambda x: norm(x, 0, 100))
-    train_data["cloud"]             = train_data["cloud"].apply(lambda x: norm(x, 0, 10))
-    train_data["one"]               = train_data["one"].apply(lambda x: norm(x, 0, 200))
-    train_data["six"]               = train_data["six"].apply(lambda x: norm(x, 0, 200))
-
-    inout_seq = create_inout_sequences(train_data, config.window)
+    inout_seq = create_inout_sequences(torch.from_numpy(train_data).float(), config.window)
     # print("train_inout_seq :", inout_seq)
 
     print("\n------------ 3 training ------------")
     train_weather(config, inout_seq)
-    train_score(config_score, train_data)
+    train_score(config_score, torch.from_numpy(train_data).float())

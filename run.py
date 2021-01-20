@@ -6,7 +6,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from Util.draw import draw_h
 from Util.adj import idx2chinese_place
-from Util.tool import en_preprocess, unnoramlization, get_now_data, route_recommendation, get_final_score
+from Util.tool import en_preprocess, de_preprocess, get_now_data, route_recommendation, get_final_score
 from validpreModel import ValidConfig, ValidScoreConfig, test, test_score
 
 
@@ -39,18 +39,19 @@ parser.add_argument('--nightmode',
 args = parser.parse_args()
 
 
-def run_immediate(config, score_config):
+def run_immediate(w_config, s_config):
     # get all places score to 20(default)/24(if night mode) this day
     scores = []
-    for place in config.place_name:
+    for place in w_config.place_name:
         print("-------------------- place :", place, "--------------------")
-        weather_data = get_now_data(args.year, args.month, args.day, args.hour, place, config.window)
-        valid_data = weather_data[config.attributes_list].values.astype(np.float)
-        valid_data = en_preprocess(valid_data)
-        valid_outputs = test(config, valid_data)
+        weather_data = get_now_data(args.year, args.month, args.day, args.hour, place, w_config.window)
+        weather_data = en_preprocess(weather_data)
+        valid_data = weather_data[w_config.attributes_list].values.astype(np.float)
+
+        valid_outputs = test(w_config, valid_data)
         score_outputs= []
         for wea in valid_outputs:
-            score_outputs.append(test_score(score_config, torch.tensor(wea, dtype=torch.float)).item())
+            score_outputs.append(test_score(s_config, torch.tensor(wea, dtype=torch.float)).item())
         # print("valid_inputs_after :", valid_outputs)
 
         valid_outputs = np.array(valid_outputs)

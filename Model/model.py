@@ -24,16 +24,12 @@ class weather_LSTM(nn.Module):
 class score_model(nn.Module):
     def __init__(self, input_size, output_size):
         super().__init__()
-        self.score_linear1 = nn.Linear(input_size, 64)
-        # self.score_linear1 = nn.Linear(input_size, output_size)
-        self.score_linear2 = nn.Linear(64, 32)
-        self.score_linear3 = nn.Linear(32, output_size)
+        self.score_linear1 = nn.Linear(input_size, 32)
+        self.score_linear2 = nn.Linear(32, output_size)
 
     def forward(self, input_seq):
         s = self.score_linear1(input_seq)
-        s = torch.sigmoid(s)
+        s = torch.relu(s)
         s = self.score_linear2(s)
-        s = torch.sigmoid(s)
-        s = self.score_linear3(s)
-        s = torch.sigmoid(s)
+        s = torch.relu(s)
         return s

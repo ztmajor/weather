@@ -5,7 +5,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from Util.draw import draw_h
 from Model.model import weather_LSTM, score_model
-from Util.tool import norm, unnorm
+from Util.tool import en_preprocess, de_preprocess
 
 
 class ValidConfig(object):
@@ -20,10 +20,9 @@ class ValidConfig(object):
 
         # model parameter
         self.window = 12
-        self.in_dim = 3
-        self.attributes_num = 3
+        self.in_dim = 8
         self.hidden_dim = 128
-        self.out_dim = 3
+        self.out_dim = 8
 
         # predict
         self.future_pred = 12
@@ -42,7 +41,7 @@ class ValidScoreConfig(object):
         self.log_path = "Results/Logger/test_{}.txt".format(self.name)
 
         # model parameter
-        self.attributes_num = 3
+        self.attributes_num = 8
         self.out_dim = 6
 
         # predict
@@ -97,44 +96,33 @@ if __name__ == '__main__':
     print(weather_data.head())
 
     print("------------ 2 set useful attributes ------------\n")
-    attributes = ['temperature', 'humidity', 'windspeed', 'score']
+    attributes = ["temperature", "dew", "sealevelpressure", "wind dir", "wind speed", "cloud", "one", "six", "score"]
 
     # set training config
-    config = ValidConfig("weather", "weather_LSTM_00180")
+    config = ValidConfig("weather", "weather_LSTM_00001")
     config.in_dim = len(attributes) - 1
 
+    weather_data = en_preprocess(weather_data)
     valid_data = weather_data[attributes].values.astype(np.float)
     print("data length = {:d} | attribute names = {}".format(len(valid_data), attributes))
 
     print("------------ 3 test ------------\n")
-    valid_data["temperature"]       = valid_data["temperature"].apply(lambda x: norm(x, -100, 400))
-    valid_data["dew"]               = valid_data["dew"].apply(lambda x: norm(x, -200, 300))
-    valid_data["sealevelpressure"]  = valid_data["sealevelpressure"].apply(lambda x: norm(x, 0, 15000))
-    valid_data["wind dir"]          = valid_data["wind dir"].apply(lambda x: norm(x, 0, 360))
-    valid_data["wind speed"]        = valid_data["wind speed"].apply(lambda x: norm(x, 0, 100))
-    valid_data["cloud"]             = valid_data["cloud"].apply(lambda x: norm(x, 0, 10))
-    valid_data["one"]               = valid_data["one"].apply(lambda x: norm(x, 0, 200))
-    valid_data["six"]               = valid_data["six"].apply(lambda x: norm(x, 0, 200))
-
     valid_outputs = test(config, valid_data)
     print("valid_inputs_after :\n", valid_outputs)
 
+    # valid_data = de_preprocess(valid_data) # reamark: assert valid data is a dataframe
     valid_outputs = np.array(valid_outputs)
-    valid_data["temperature"] = valid_data["temperature"].apply(lambda x: unnorm(x, -100, 400))
-    valid_data["dew"] = valid_data["dew"].apply(lambda x: unnorm(x, -200, 300))
-    valid_data["sealevelpressure"] = valid_data["sealevelpressure"].apply(lambda x: unnorm(x, 0, 15000))
-    valid_data["wind dir"] = valid_data["wind dir"].apply(lambda x: unnorm(x, 0, 360))
-    valid_data["wind speed"] = valid_data["wind speed"].apply(lambda x: unnorm(x, 0, 100))
-    valid_data["cloud"] = valid_data["cloud"].apply(lambda x: unnorm(x, 0, 10))
-    valid_data["one"] = valid_data["one"].apply(lambda x: unnorm(x, 0, 200))
-    valid_data["six"] = valid_data["six"].apply(lambda x: unnorm(x, 0, 200))
+    # print("actual_valid_outputs :\n", valid_outputs)
 
-    print("actual_valid_outputs :\n", valid_outputs)
-
-    score_config = ValidScoreConfig("score", "score_00100")
+    score_config = ValidScoreConfig("score", "score_00050")
     config.attributes_num = len(attributes) - 1
-    for i in valid_data:
-        score_outputs = test_score(score_config, i[:-1])
-        print("actual_score_outputs :", score_outputs.item())
 
+    correct = 0.0
+    total = len(valid_data)
+    for i in valid_data:
+        score_outputs = test_score(score_config, torch.from_numpy(i[:-1]).float())
+        # print("actual_score_outputs :", score_outputs.item(), "gt :", i[-1])
+        if score_outputs.item() == int(i[-1]):
+            correct += 1
+    print("correct rate :", correct / total)
     # draw_h(weather_data["score"], score_outputs, len(score_outputs))

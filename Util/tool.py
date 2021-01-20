@@ -65,26 +65,9 @@ def unnoramlization(data, minVals, maxVals):
     return normData
 
 
-def en_preprocess(data, min_val, max_val):
-    data = noramlization(data[:2], min_val, max_val)
-    data = torch.from_numpy(data).float()
-    # print("data_normalized :", data)
-    print(data.type())
-    return data
-
-
-def de_preprocess(data):
-    data[:, 0] *= 2
-    data[:, 2] /= 10
-    data[:2] = noramlization(data[:2], 0, 70)
-    data = torch.from_numpy(data).float()
-    print("data_normalized :", data)
-    print(data.type())
-    return data
-
-
 def get_now_data(year, month, day, hour, place_name, window=12):
-    data = pd.read_csv("Dataset/weather_{}.csv".format(place_name))
+    hour += 1   # calculate include now
+    data = pd.read_csv("Dataset/place/weather_{}.csv".format(place_name))
     pre_data = pd.DataFrame(columns=data.columns)
     data = data.set_index(["month","day","hour"])
     now = datetime.datetime(int(year), int(month), int(day), int(hour)) + datetime.timedelta(hours=-window)
@@ -95,6 +78,29 @@ def get_now_data(year, month, day, hour, place_name, window=12):
         pre_data = pre_data.append(row, ignore_index=True)
     return pre_data
 
+
+def en_preprocess(data):
+    data["temperature"] = data["temperature"].apply(lambda x: norm(x, -100, 400))
+    data["dew"] = data["dew"].apply(lambda x: norm(x, -200, 300))
+    data["sealevelpressure"] = data["sealevelpressure"].apply(lambda x: norm(x, 0, 15000))
+    data["wind dir"] = data["wind dir"].apply(lambda x: norm(x, 0, 360))
+    data["wind speed"] = data["wind speed"].apply(lambda x: norm(x, 0, 100))
+    data["cloud"] = data["cloud"].apply(lambda x: norm(x, 0, 10))
+    data["one"] = data["one"].apply(lambda x: norm(x, 0, 200))
+    data["six"] = data["six"].apply(lambda x: norm(x, 0, 200))
+    return data
+
+
+def de_preprocess(data):
+    data["temperature"] = data["temperature"].apply(lambda x: unnorm(x, -100, 400))
+    data["dew"] = data["dew"].apply(lambda x: unnorm(x, -200, 300))
+    data["sealevelpressure"] = data["sealevelpressure"].apply(lambda x: unnorm(x, 0, 15000))
+    data["wind dir"] = data["wind dir"].apply(lambda x: unnorm(x, 0, 360))
+    data["wind speed"] = data["wind speed"].apply(lambda x: unnorm(x, 0, 100))
+    data["cloud"] = data["cloud"].apply(lambda x: unnorm(x, 0, 10))
+    data["one"] = data["one"].apply(lambda x: unnorm(x, 0, 200))
+    data["six"] = data["six"].apply(lambda x: unnorm(x, 0, 200))
+    return data
 
 def route_recommendation(scores):
     # TODO 根据分数给出路线推荐的算法，考虑距离；每天最多推荐景点数；价格等
