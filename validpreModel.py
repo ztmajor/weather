@@ -27,8 +27,8 @@ class ValidConfig(object):
 
         # predict
         self.future_pred = 12
-        self.attributes_list = ['temperature', 'humidity', 'windspeed', 'score']
-        self.place_name = ["xh", "tzw"]
+        self.attributes_list = ["temperature", "dew", "sealevelpressure", "wind dir", "wind speed", "cloud", "one", "six", "score"]
+        self.place_name = ["city_museum", "spin_museum", "memorial", "yuhua", "niushou", "confucius", "zhongshan", "president", "ginkgo", "zoo"]
 
 
 class ValidScoreConfig(object):
@@ -46,8 +46,8 @@ class ValidScoreConfig(object):
         self.out_dim = 6
 
         # predict
-        self.attributes_list = ['temperature', 'humidity', 'windspeed', 'score']
-        self.place_name = ["xh", "tzw"]
+        self.attributes_list = ["temperature", "dew", "sealevelpressure", "wind dir", "wind speed", "cloud", "one", "six", "score"]
+        self.place_name = ["city_museum", "spin_museum", "memorial", "yuhua", "niushou", "confucius", "zhongshan", "president", "ginkgo", "zoo"]
 
 
 def test(config, test_seq):
@@ -61,14 +61,16 @@ def test(config, test_seq):
     valid_weather = test_seq[:config.window][:, :-1].tolist()
     # print("valid_weather_inputs_before", valid_weather)
 
+    valid_res = []
     net.eval()
     for i in range(config.future_pred):
         seq = torch.tensor(valid_weather[-config.window:], dtype=torch.float)
         y_pred = net(seq)
         valid_weather.append(y_pred.detach().numpy().tolist())
+        valid_res.append(y_pred.detach().numpy().tolist())
 
     logger.close()
-    return valid_weather
+    return valid_res
 
 
 def test_score(config, test_seq):
@@ -76,8 +78,8 @@ def test_score(config, test_seq):
                             output_size=config.out_dim)
     # print(score_net)
     score_net.load_state_dict(torch.load(config.load_path, map_location='cpu'))
-    valid_weather = test_seq[:-1]
-    valid_score = test_seq[-1:]
+    valid_weather = test_seq
+    # valid_score = test_seq
     # print("valid_weather_inputs_before", valid_weather)
     # print("valid_score_inputs_before", valid_score)
 
@@ -92,7 +94,7 @@ def test_score(config, test_seq):
 if __name__ == '__main__':
     print("------------ 1 load training data ------------\n")
     # weather_data = pd.read_csv("Dataset/weather_train.csv")
-    weather_data = pd.read_csv("Dataset/weather_valid.csv")
+    weather_data = pd.read_csv("Dataset/places/weather_valid.csv")
     print(weather_data.head())
 
     print("------------ 2 set useful attributes ------------\n")
@@ -119,7 +121,7 @@ if __name__ == '__main__':
     score_config = ValidScoreConfig("score", "score_00100")
     config.attributes_num = len(attributes) - 1
     for i in valid_data:
-        score_outputs = test_score(score_config, i)
+        score_outputs = test_score(score_config, i[:-1])
         print("actual_score_outputs :", score_outputs.item())
 
     # draw_h(weather_data["score"], score_outputs, len(score_outputs))

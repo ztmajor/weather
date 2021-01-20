@@ -5,7 +5,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from Util.draw import draw_h
-from Util.tool import en_preprocess, unnoramlization, get_now_data
+from Util.adj import idx2place
+from Util.tool import en_preprocess, unnoramlization, get_now_data, route_recommendation
 from validpreModel import ValidConfig, ValidScoreConfig, test, test_score
 
 
@@ -40,24 +41,31 @@ args = parser.parse_args()
 
 def run_immediate(config, score_config):
     # get all places score to 20(default)/24(if night mode) this day
+    scores = []
     for place in config.place_name:
         print("-------------------- place :", place, "--------------------")
-        weather_data = get_now_data(args.year, args.month, args.day, args.hour, place)
+        weather_data = get_now_data(args.year, args.month, args.day, args.hour, place, config.window)
         valid_data = weather_data[config.attributes_list].values.astype(np.float)
         valid_data = en_preprocess(valid_data)
         valid_outputs = test(config, valid_data)
         score_outputs= []
         for wea in valid_outputs:
-            score_outputs.append(test_score(score_config, wea))
-        # print("valid_inputs_after :\n", valid_outputs)
+            score_outputs.append(test_score(score_config, torch.tensor(wea, dtype=torch.float)).item())
+        # print("valid_inputs_after :", valid_outputs)
 
         valid_outputs = np.array(valid_outputs)
         valid_outputs[:, 2] *= 10
         valid_outputs = unnoramlization(valid_outputs, 0, 70)
-        score_outputs = np.array(score_outputs)
 
         print("actual_valid_outputs :\n", valid_outputs)
-        print("actual_score_outputs :\n", score_outputs.squeeze(1))
+        print("actual_score_outputs :\n", score_outputs)
+
+        scores.append(score_outputs)
+
+    # scores = np.array(scores)
+    # print(scores.shape)
+    # print("scores:", scores)
+    return np.array(scores)
 
 
 def run_days():
@@ -66,9 +74,10 @@ def run_days():
 
 
 if __name__ == '__main__':
+    res_scores = 0
     if args.immediate:
         print("-------------------- immediately --------------------")
-        attributes = ['temperature', 'humidity', 'windspeed', 'score']
+        attributes = ["temperature", "dew", "sealevelpressure", "wind dir", "wind speed", "cloud", "one", "six", "score"]
         print(attributes)
         # set training config
         config = ValidConfig("weather", "weather_LSTM_00180")
@@ -81,14 +90,24 @@ if __name__ == '__main__':
         # 9-20
         if args.nightmode:
             config.future_pred = 24 - args.hour
-            run_immediate(config, score_config)
-        elif args.nightmode == False and args.hour > 20:
+            res_scores = run_immediate(config, score_config)
+        elif args.nightmode is False and args.hour > 20:
             print("今天太晚了！改日再玩吧")
             # run_days()
         else:
             config.future_pred = 20 - max(args.hour, 9)
-            run_immediate(config, score_config)
+            res_scores = run_immediate(config, score_config)
     else:
         print("not immediately")
         run_days()
 
+    print("-------------------- pred finish --------------------")
+    print(res_scores)
+    print(res_scores.shape)
+    route = route_recommendation(res_scores)
+    print("route recommendation:")
+    for i, r in enumerate(route):
+        if i == 0:
+            print(idx2place[r], end=" ")
+        else:
+            print("->", idx2place[r], end=" ")

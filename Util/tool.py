@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import torch
+import datetime
 
 
 __all__ = {
@@ -74,15 +75,27 @@ def de_preprocess(data):
     return data
 
 
-def get_now_data(year, month, day, hour, place_name):
-    # TODO 解决按照时间，景点搜索数据（从此时刻往回数config.window条数据）
+# def get_now_data(year, month, day, hour, place_name):
+#     # TODO 解决按照时间，景点搜索数据（从此时刻往回数config.window条数据）
+#     data = pd.read_csv("Dataset/places/weather_{}.csv".format(place_name))
+#     return data
+
+def get_now_data(year, month, day, hour, place_name, window=12):
     data = pd.read_csv("Dataset/places/weather_{}.csv".format(place_name))
-    return data
+    pre_data = pd.DataFrame(columns=data.columns)
+    data = data.set_index(["month","day","hour"])
+    now = datetime.datetime(int(year), int(month), int(day), int(hour)) + datetime.timedelta(hours=-window)
+    for i in range(window):
+        now = now + datetime.timedelta(hours=1)
+        row = data.loc[[[now.month, now.day, now.hour]]].reset_index()
+        row["year"] = now.year
+        pre_data = pre_data.append(row, ignore_index=True)
+    return pre_data
 
 
 def route_recommendation(scores):
-    # TODO 解决
-    route = []
+    # TODO 根据分数给出路线推荐的算法，考虑距离；每天最多推荐景点数；价格等
+    route = [1, 2, 3]
     return route
 
 

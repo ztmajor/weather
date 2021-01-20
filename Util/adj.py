@@ -1,6 +1,6 @@
 import numpy as np
 
-idx2place = {
+idx2chinese_place = {
     0: "南京博物院",
     1: "江宁织造博物馆",
     2: "南京遇难者同胞纪念馆",
@@ -13,7 +13,7 @@ idx2place = {
     9: "红山森林动物园",
 }
 
-place2idx = {
+chinese_place2idx = {
     "南京博物院":               0,
     "江宁织造博物馆":           1,
     "南京遇难者同胞纪念馆":      2,
@@ -25,6 +25,20 @@ place2idx = {
     "银杏湖乐园":               8,
     "红山森林动物园":           9,
 }
+
+idx2english_place = {
+    0: "city_museum",
+    1: "spin_museum",
+    2: "memorial",
+    3: "yuhua",
+    4: "niushou",
+    5: "confucius",
+    6: "zhongshan",
+    7: "president",
+    8: "ginkgo",
+    9: "zoo"
+}
+
 
 adj = [
     [0,17,16,19,8.3,7.8,11,20,16,25,23],
@@ -43,5 +57,5 @@ adj = [
 
 adj = np.array(adj)
 print(adj)
-print(idx2place)
-print(place2idx)
+print(idx2chinese_place)
+print(chinese_place2idx)

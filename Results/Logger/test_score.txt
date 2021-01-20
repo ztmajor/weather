@@ -1,3 +1,0 @@
-score_model(
-  (score_linear1): Linear(in_features=3, out_features=6, bias=True)
-)

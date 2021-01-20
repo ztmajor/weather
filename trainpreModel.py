@@ -114,12 +114,12 @@ def train_score(config, data_seq):
 
 if __name__ == '__main__':
     print("\n------------ 1 load training data ------------")
-    weather_data = pd.read_csv("Dataset/weather_train.csv")
+    weather_data = pd.read_csv("Dataset/places/weather_train.csv")
     print("training data:\n", weather_data.head())
     print("training attributes:", weather_data.columns)
 
     print("\n------------ 2 set useful attributes ------------")
-    attributes = ['temperature', 'humidity', 'windspeed', 'score']
+    attributes = ["temperature", "dew", "sealevelpressure", "wind dir", "wind speed", "cloud", "one", "six", "score"]
     # attributes = ['temperature']
 
     # set training config

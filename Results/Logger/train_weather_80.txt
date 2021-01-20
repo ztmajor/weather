@@ -1,7 +1,0 @@
------------- net ------------
- weather_LSTM(
-  (lstm): LSTM(3, 128)
-  (linear): Linear(in_features=128, out_features=3, bias=True)
-  (score_linear): Linear(in_features=3, out_features=6, bias=True)
-)
-Epoch 00020 | Weather loss1 4.57395029nEpoch 00040 | Weather loss1 52.45030594nEpoch 00060 | Weather loss1 42.16307449nEpoch 00080 | Weather loss1 12.41454411n

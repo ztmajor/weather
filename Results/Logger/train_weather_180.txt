@@ -1,6 +1,0 @@
------------- net ------------
- weather_LSTM(
-  (lstm): LSTM(3, 128)
-  (linear): Linear(in_features=128, out_features=3, bias=True)
-  (score_linear): Linear(in_features=3, out_features=6, bias=True)
-)
