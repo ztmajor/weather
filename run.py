@@ -13,7 +13,7 @@ from validpreModel import ValidConfig, ValidScoreConfig, test, test_score
 parser = argparse.ArgumentParser()
 parser.add_argument('--year',
                     type=int,
-                    default=2021,
+                    default=2020,
                     help='year')
 parser.add_argument('--month',
                     type=int,
@@ -55,11 +55,10 @@ def run_immediate(w_config, s_config):
         # print("valid_inputs_after :", valid_outputs)
 
         valid_outputs = np.array(valid_outputs)
-        valid_outputs[:, 2] *= 10
-        valid_outputs = unnoramlization(valid_outputs, 0, 70)
+        # valid_outputs = de_preprocess(valid_outputs)
 
-        print("actual_valid_outputs :\n", valid_outputs)
-        print("actual_score_outputs :\n", score_outputs)
+        # print("actual_valid_outputs :\n", valid_outputs)
+        # print("actual_score_outputs :\n", score_outputs)
 
         scores.append(score_outputs)
 
@@ -92,7 +91,7 @@ if __name__ == '__main__':
         if args.nightmode:
             config.future_pred = 24 - args.hour
             weather_scores = run_immediate(config, score_config)
-        elif args.nightmode is False and args.hour > 20:
+        elif not args.nightmode and args.hour > 20:
             print("今天太晚了！改日再玩吧")
             # run_days()
         else:

@@ -69,7 +69,7 @@ def get_now_data(year, month, day, hour, place_name, window=12):
     hour += 1   # calculate include now
     data = pd.read_csv("Dataset/place/weather_{}.csv".format(place_name))
     pre_data = pd.DataFrame(columns=data.columns)
-    data = data.set_index(["month","day","hour"])
+    data = data.set_index(["month", "day", "hour"])
     now = datetime.datetime(int(year), int(month), int(day), int(hour)) + datetime.timedelta(hours=-window)
     for i in range(window):
         now = now + datetime.timedelta(hours=1)
