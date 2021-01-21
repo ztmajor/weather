@@ -77,7 +77,7 @@ if __name__ == '__main__':
         attributes = ["temperature", "dew", "sealevelpressure", "wind dir", "wind speed", "cloud", "one", "six", "score"]
         print(attributes)
         # set training config
-        config = ValidConfig("weather", "weather_LSTM_00001")
+        config = ValidConfig("weather", "weather_LSTM_00200")
         config.attributes_list = attributes
         config.in_dim = len(attributes) - 1
         score_config = ValidScoreConfig("score", "score_00050")
@@ -107,7 +107,7 @@ if __name__ == '__main__':
 
     # get route
     print("-------------------- route recommendation --------------------")
-    route = route_recommendation(res_scores)
+    route = route_recommendation(res_scores, step=3)
     for i, r in enumerate(route):
         if i == 0:
             print(idx2chinese_place[r], end=" ")

@@ -1,0 +1,25 @@
+------------ net ------------
+ weather_LSTM(
+  (lstm): LSTM(8, 128)
+  (linear): Linear(in_features=128, out_features=8, bias=True)
+)
+Epoch 00010 | Weather loss1 2.04382586
+Epoch 00020 | Weather loss1 0.36174148
+Epoch 00030 | Weather loss1 0.30590934
+Epoch 00040 | Weather loss1 4.10733795
+Epoch 00050 | Weather loss1 0.47453249
+Epoch 00060 | Weather loss1 0.33930323
+Epoch 00070 | Weather loss1 0.46903831
+Epoch 00080 | Weather loss1 0.24596748
+Epoch 00090 | Weather loss1 0.08285011
+Epoch 00100 | Weather loss1 0.09619044
+Epoch 00110 | Weather loss1 0.12917998
+Epoch 00120 | Weather loss1 0.20363964
+Epoch 00130 | Weather loss1 0.91785121
+Epoch 00140 | Weather loss1 0.30309951
+Epoch 00150 | Weather loss1 0.61131608
+Epoch 00160 | Weather loss1 0.15858418
+Epoch 00170 | Weather loss1 0.47882146
+Epoch 00180 | Weather loss1 0.84425825
+Epoch 00190 | Weather loss1 0.51502150
+Epoch 00200 | Weather loss1 0.19821474

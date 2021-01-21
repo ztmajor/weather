@@ -12,8 +12,8 @@ class TrainConfig(object):
     def __init__(self, name):
         # training parameter
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        self.num_epochs = 1
-        self.rpt_freq = 1
+        self.num_epochs = 200
+        self.rpt_freq = 10
 
         # model info
         self.name = name
@@ -78,7 +78,7 @@ def train_weather(config, data_seq):
 
         if epoch % config.rpt_freq == 0:
             print("Epoch {:05d} | Weather loss1 {:.8f}".format(epoch, loss))
-            logger.write("Epoch {:05d} | Weather loss1 {:.8f}n".format(epoch, loss))
+            logger.write("Epoch {:05d} | Weather loss1 {:.8f}\n".format(epoch, loss))
     torch.save(net.state_dict(), config.save_path)
     logger.close()
 
