@@ -108,6 +108,7 @@ if __name__ == '__main__':
     # get route
     print("-------------------- route recommendation --------------------")
     route = route_recommendation(res_scores, step=3)
+    print(route)
     for i, r in enumerate(route):
         if i == 0:
             print(idx2chinese_place[r], end=" ")
