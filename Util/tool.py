@@ -115,15 +115,35 @@ def de_preprocess(data):
     data["six"] = data["six"].apply(lambda x: unnorm(x, 0, 200))
     return data
 
-def route_recommendation(scores):
-    # TODO 根据分数给出路线推荐的算法，考虑距离；每天最多推荐景点数；价格等
-    route = [1, 2, 3]
-    return route
-
 
 def get_final_score(weather_score):
+    # TODO 天气分数，考虑距离；每天最多推荐景点数；价格等
     final_score = weather_score
     return final_score
+
+
+def route_recommendation(scores, step):
+    route = []
+    hour = scores.shape[0]
+    place = [0] * hour
+    scores = scores.T
+    # print("scores: ",scores)
+    # print("start:")
+    for i in range(scores.shape[0]):
+        if i % step == 0:
+            max_idx = -1
+            max_score = -1
+            for j in range(scores.shape[1]):
+                if scores[i][j] > max_score and place[j] != 1:
+                    max_score = scores[i][j]
+                    max_idx = j
+            place[max_idx] = 1
+            print(scores[i])
+            route.append(max_idx)
+            if len(route) == hour:
+                break
+    return route
+
 
 
 if __name__ == "__main__":
@@ -133,3 +153,6 @@ if __name__ == "__main__":
     print(noramlization(a, 0, 10))
     c = unnoramlization(b, 0, 10)
     print(c)
+
+    # s = np.array([[1,2,3,4,5,6,7,8,9,0], [2,1,4,5,1,3,5,76,89,0], [1,3,5,7,8,9,0,1,2,3]])
+    # route_recommendation(s, step=3)
