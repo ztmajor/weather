@@ -22,7 +22,7 @@ parser.add_argument('--month',
                     help='month')
 parser.add_argument('--day',
                     type=int,
-                    default=27,
+                    default=25,
                     help='day')
 parser.add_argument('--hour',
                     type=int,
@@ -49,7 +49,7 @@ parser.add_argument('--start_month',
                     help='month')
 parser.add_argument('--start_day',
                     type=int,
-                    default=27,
+                    default=26,
                     help='day')
 # end_trip
 parser.add_argument('--end_year',
@@ -62,7 +62,7 @@ parser.add_argument('--end_month',
                     help='month')
 parser.add_argument('--end_day',
                     type=int,
-                    default=31,
+                    default=27,
                     help='day')
 args = parser.parse_args()
 
@@ -123,26 +123,52 @@ if __name__ == '__main__':
             print(weather_scores.shape)
 
             # get route
-            route = route_recommendation(weather_scores, step=4)
+            been = [0] * len(config.place_name)
+            route = route_recommendation(weather_scores, 4, been)
+
+            print("-------------------- route recommendation --------------------")
+            print(route)
+            for i, r in enumerate(route):
+                if i == 0:
+                    print(idx2chinese_place[r], end=" ")
+                else:
+                    print("->", idx2chinese_place[r], end=" ")
     else:
         print("-------------------- not immediately ---------------")
         current_day = datetime(args.year, args.month, args.day)
         start_day = datetime(args.start_year, args.start_month, args.start_day)
         end_day = datetime(args.end_year, args.end_month, args.end_day)
-        config.future_pred = ((end_day - current_day).days + 1) * 24 + 24 - args.hour
+        print("current {} | start {} | end {}".format(current_day, start_day, end_day))
+        assert end_day >= start_day > current_day
+
+        config.future_pred = ((end_day - current_day).days) * 24 + 24 - args.hour
+        # print(config.future_pred)
 
         weather_scores = predict(config, score_config)
 
-        print("weather score ", weather_scores)
-        print(weather_scores.shape)
+        # print("weather score ", weather_scores)
+        # print(weather_scores.shape)
 
         # get route
-        route = route_recommendation_multi(weather_scores, step=4, days=3)
+        play_day = (end_day - start_day).days + 1
+        been = [1] + [0] * len(config.place_name)
 
-    print("-------------------- route recommendation --------------------")
-    print(route)
-    for i, r in enumerate(route):
-        if i == 0:
-            print(idx2chinese_place[r], end=" ")
-        else:
-            print("->", idx2chinese_place[r], end=" ")
+        # if args.nightmode:
+        weather_scores = weather_scores[:, ((start_day - current_day).days - 1) * 24 + 24 - args.hour:]
+        # else:
+        #     weather_scores = weather_scores[((start_day - current_day).days) * 24 + 24 - args.hour + 8:]
+
+        for d in range(play_day):
+            weather_scores_day = weather_scores[:, d*24:(d+1)*24]
+            route.append(route_recommendation(weather_scores_day, 6, been))
+
+        print("-------------------- route recommendation --------------------")
+        print(route)
+        for day in range(len(route)):
+            print("day {} :".format(day+1))
+            for i, r in enumerate(route[day]):
+                if i == 0:
+                    print(idx2chinese_place[r], end=" ")
+                else:
+                    print("->", idx2chinese_place[r], end=" ")
+            print("->", idx2chinese_place[0])
