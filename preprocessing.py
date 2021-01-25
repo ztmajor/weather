@@ -28,6 +28,6 @@ if __name__ == "__main__":
     #     print("\n------------ 2 split data into train set and valid set ------------")
     #     split_data_set(weather_data, weather_data.columns, valid_num=1*12)
 
-    name_list = ["xihu", "sc", "hfj", "xixi", "qdh", "xianghu", "zj_museum", "zj_art_museum", "zj_silk_museum", "hz_plant"]
+    name_list = ["west_lake", "sc", "hfj", "xixi", "qdh", "xianghu", "zj_museum", "zj_art_museum", "silk_museum", "hz_plant"]
     for name in name_list:
         set_year(name)

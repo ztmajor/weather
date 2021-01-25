@@ -27,7 +27,7 @@ class ValidConfig(object):
         # predict
         self.future_pred = 12
         self.attributes_list = ["temperature", "dew", "sealevelpressure", "wind dir", "wind speed", "cloud", "one", "six", "score"]
-        self.place_name = ["xihu", "sc", "hfj", "xixi", "qdh", "xianghu", "zj_museum", "zj_art_museum", "zj_silk_museum", "hz_plant"]
+        self.place_name = ["west_lake", "sc", "hfj", "xixi", "qdh", "xianghu", "zj_museum", "zj_art_museum", "silk_museum", "hz_plant"]
         # self.place_name = ["zhongshan", "president", "ginkgo", "zoo"]
 
 
@@ -47,7 +47,7 @@ class ValidScoreConfig(object):
 
         # predict
         self.attributes_list = ["temperature", "dew", "sealevelpressure", "wind dir", "wind speed", "cloud", "one", "six", "score"]
-        self.place_name = ["xihu", "sc", "hfj", "xixi", "qdh", "xianghu", "zj_museum", "zj_art_museum", "zj_silk_museum", "hz_plant"]
+        self.place_name = ["west_lake", "sc", "hfj", "xixi", "qdh", "xianghu", "zj_museum", "zj_art_museum", "silk_museum", "hz_plant"]
 
 
 def test(config, test_seq):
