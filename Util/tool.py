@@ -18,7 +18,6 @@ __all__ = {
     "de_preprocess",
     "get_final_score",
     "route_recommendation",
-    "route_recommendation_multi",
 }
 
 
@@ -161,38 +160,6 @@ def route_recommendation(weather_scores, step, place):
             now = max_idx
             if len(route) == hour:
                 break
-    return route
-
-
-def route_recommendation_multi(weather_scores, step, days):
-    num_places = weather_scores.shape[0]
-    hour = weather_scores.shape[1]
-    place = [0] * num_places
-    weather_scores = weather_scores.T
-    print("trans", weather_scores)
-
-    # init start place
-    route = [[0] for _ in range(days)]
-    for d in range(days):
-        now = 0
-        for i in range(hour):
-            if i % step == 0:
-                max_idx = -1
-                max_score = -1
-                w_score_per_hour = weather_scores[i]
-                f_score_per_hour = get_final_score(w_score_per_hour, site=now)
-                # print("f_score_per_hour", f_score_per_hour)
-                for j in range(num_places):
-                    if f_score_per_hour[j] > max_score and place[j] != 1:
-                        max_score = f_score_per_hour[j]
-                        max_idx = j
-                place[max_idx] = 1
-
-                # update site
-                route.append(max_idx)
-                now = max_idx
-                if len(route) == hour:
-                    break
     return route
 
 
