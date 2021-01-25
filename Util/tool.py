@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import torch
 import datetime
+from Util.adj import adj
 
 
 __all__ = {
@@ -10,9 +11,13 @@ __all__ = {
     "split_data_set",
     "noramlization",
     "unnoramlization",
+    "norm",
+    "unnorm",
+    "get_now_data",
     "en_preprocess",
     "de_preprocess",
-    "get_now_data",
+    "get_final_score",
+    "route_recommendation",
 }
 
 
@@ -58,6 +63,15 @@ def noramlization(data, minVals, maxVals):
     return normData * 100
 
 
+def unnoramlization(data, minVals, maxVals):
+    ranges = maxVals - minVals
+    m = data.shape[0]
+    n = data.shape[1]
+    normData = data * ranges / 100
+    normData = normData + np.tile(minVals, (m, n))
+    return normData
+
+
 def norm(data, minVals, maxVals):
     normData = (data - minVals) / (maxVals - minVals)
     return normData * 10
@@ -67,15 +81,6 @@ def unnorm(normData, minVals, maxVals):
     normData /= 10
     unnormData = normData * (maxVals - minVals) + minVals
     return unnormData
-
-
-def unnoramlization(data, minVals, maxVals):
-    ranges = maxVals - minVals
-    m = data.shape[0]
-    n = data.shape[1]
-    normData = data * ranges / 100
-    normData = normData + np.tile(minVals, (m, n))
-    return normData
 
 
 def get_now_data(year, month, day, hour, place_name, window=12):
@@ -118,6 +123,7 @@ def de_preprocess(data):
 
 def get_final_score(weather_score):
     # TODO 天气分数，考虑距离；每天最多推荐景点数；价格等
+
     final_score = weather_score
     return final_score
 

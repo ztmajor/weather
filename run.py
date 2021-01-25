@@ -98,7 +98,7 @@ if __name__ == '__main__':
         print("not immediately")
         run_days()
 
-    print(weather_scores)
+    print("weather score ", weather_scores)
     print(weather_scores.shape)
 
     print("-------------------- pred final scores --------------------")
