@@ -105,6 +105,7 @@ if __name__ == '__main__':
     score_config.attributes_list = attributes
     score_config.attributes_num = len(attributes) - 1
 
+    route = []
     if args.immediate:
         print("-------------------- immediately --------------------")
         # 9-20
@@ -122,14 +123,7 @@ if __name__ == '__main__':
             print(weather_scores.shape)
 
             # get route
-            print("-------------------- route recommendation --------------------")
             route = route_recommendation(weather_scores, step=4)
-            print(route)
-            for i, r in enumerate(route):
-                if i == 0:
-                    print(idx2chinese_place[r], end=" ")
-                else:
-                    print("->", idx2chinese_place[r], end=" ")
     else:
         print("-------------------- not immediately ---------------")
         current_day = datetime(args.year, args.month, args.day)
@@ -143,11 +137,12 @@ if __name__ == '__main__':
         print(weather_scores.shape)
 
         # get route
-        print("-------------------- route recommendation --------------------")
         route = route_route_recommendation_multi(weather_scores, step=4, days=3)
-        print(route)
-        for i, r in enumerate(route):
-            if i == 0:
-                print(idx2chinese_place[r], end=" ")
-            else:
-                print("->", idx2chinese_place[r], end=" ")
+
+    print("-------------------- route recommendation --------------------")
+    print(route)
+    for i, r in enumerate(route):
+        if i == 0:
+            print(idx2chinese_place[r], end=" ")
+        else:
+            print("->", idx2chinese_place[r], end=" ")
