@@ -7,7 +7,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from Util.draw import draw_h
 from Util.adj import idx2chinese_place
-from Util.tool import en_preprocess, de_preprocess, get_now_data, route_recommendation, route_route_recommendation_multi
+from Util.tool import en_preprocess, de_preprocess, get_now_data, route_recommendation, route_recommendation_multi
 from validpreModel import ValidConfig, ValidScoreConfig, test, test_score
 
 
@@ -137,7 +137,7 @@ if __name__ == '__main__':
         print(weather_scores.shape)
 
         # get route
-        route = route_route_recommendation_multi(weather_scores, step=4, days=3)
+        route = route_recommendation_multi(weather_scores, step=4, days=3)
 
     print("-------------------- route recommendation --------------------")
     print(route)

@@ -18,7 +18,7 @@ __all__ = {
     "de_preprocess",
     "get_final_score",
     "route_recommendation",
-    "route_route_recommendation_multi",
+    "route_recommendation_multi",
 }
 
 
@@ -164,7 +164,7 @@ def route_recommendation(weather_scores, step):
     return route
 
 
-def route_route_recommendation_multi(weather_scores, step, days):
+def route_recommendation_multi(weather_scores, step, days):
     route = [0]
     num_places = weather_scores.shape[0]
     hour = weather_scores.shape[1]
