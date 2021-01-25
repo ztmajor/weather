@@ -11,8 +11,10 @@ import numpy as np
 import datetime
 # %%
 years = ["2020","2019","2018","2017","2016","2015","2014","2013","2012","2011"] 
-name = ["city_museum","confucius","ginkgo","memorial","president","spin_museum","yuhua","zhongshan","zoo","niushou"]
+name = ["west_lake", "sc", "hfj", "xixi", "qdh", "xianghu", "zj_museum", "zj_art_museum", "silk_museum", "hz_plant"]
 score = [[3,4,2,1,0],[0,1,2,4,3],[1,2,3,4,0],[2,3,4,1,0],[4,3,2,1,0],[2,4,3,1,0],[3,2,4,1,0],[4,2,3,0,1],[2,4,1,3,0],[0,3,4,1,2]]
+
+
 def getAllDate(year):
     startDate = datetime.datetime(int(year),1,1,0)
     dateMap = {"year":[],"month":[],"day":[],"hour":[]}
@@ -23,6 +25,8 @@ def getAllDate(year):
         dateMap["hour"].append(startDate.hour)
         startDate = startDate + datetime.timedelta(hours=1)
     return dateMap
+
+
 # %%
 for i in range(10):
     data = pd.read_csv("582380-99999-"+years[i],delim_whitespace=True,header=None,names=["year","month","day","hour","temperature","dew","sealevelpressure","wind dir","wind speed","cloud","one","six"],index_col=["month","day","hour"])
