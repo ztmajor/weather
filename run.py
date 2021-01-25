@@ -133,6 +133,7 @@ if __name__ == '__main__':
                     print(idx2chinese_place[r], end=" ")
                 else:
                     print("->", idx2chinese_place[r], end=" ")
+            print("->", idx2chinese_place[0])
     else:
         print("-------------------- not immediately ---------------")
         current_day = datetime(args.year, args.month, args.day)
