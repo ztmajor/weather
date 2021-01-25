@@ -67,7 +67,7 @@ parser.add_argument('--end_day',
 args = parser.parse_args()
 
 
-def run_immediate(w_config, s_config):
+def predict(w_config, s_config):
     # get all places score to 20(default)/24(if night mode) this day
     scores = []
     for place in w_config.place_name:
@@ -93,32 +93,6 @@ def run_immediate(w_config, s_config):
     return np.array(scores)
 
 
-def run_days(w_config, s_config):
-    # get all places score to 20(default)/24(if night mode) this day
-    current_day = datetime(args.year, args.month, args.day)
-    start_day = datetime(args.start_year, args.start_month, args.start_day)
-    end_day = datetime(args.end_year, args.end_month, args.end_day)
-    w_config.future_pred = ((end_day - current_day).days + 1) * 24 + 24 - args.hour
-    scores = []
-    for place in w_config.place_name:
-        print("-------------------- place :", place, "--------------------")
-        weather_data = get_now_data(args.year, args.month, args.day, args.hour, place, w_config.window)
-        weather_data = en_preprocess(weather_data)
-        valid_data = weather_data[w_config.attributes_list].values.astype(np.float)
-
-        valid_outputs = test(w_config, valid_data)
-        score_outputs = []
-        for wea in valid_outputs:
-            score_outputs.append(test_score(s_config, torch.tensor(wea, dtype=torch.float)).item())
-        # print("valid_inputs_after :", valid_outputs)
-
-        valid_outputs = np.array(valid_outputs)
-
-        scores.append(score_outputs)
-
-    return np.array(scores)
-
-
 if __name__ == '__main__':
     weather_scores = 0
     attributes = ["temperature", "dew", "sealevelpressure", "wind dir", "wind speed", "cloud", "one", "six", "score"]
@@ -136,13 +110,13 @@ if __name__ == '__main__':
         # 9-20
         if args.nightmode:
             config.future_pred = 24 - args.hour
-            weather_scores = run_immediate(config, score_config)
+            weather_scores = predict(config, score_config)
         elif not args.nightmode and args.hour > 20:
             print("今天太晚了！改日再玩吧")
             # run_days()
         else:
             config.future_pred = 20 - max(args.hour, 9)
-            weather_scores = run_immediate(config, score_config)
+            weather_scores = predict(config, score_config)
 
             print("weather score ", weather_scores)
             print(weather_scores.shape)
@@ -158,16 +132,12 @@ if __name__ == '__main__':
                     print("->", idx2chinese_place[r], end=" ")
     else:
         print("-------------------- not immediately ---------------")
-        # 9-20
-        if args.nightmode:
-            config.future_pred = 24 - args.hour
-            weather_scores = run_immediate(config, score_config)
-        elif not args.nightmode and args.hour > 20:
-            print("今天太晚了！改日再玩吧")
-            # run_days()
-        else:
-            config.future_pred = 20 - max(args.hour, 9)
-            weather_scores = run_days(config, score_config)
+        current_day = datetime(args.year, args.month, args.day)
+        start_day = datetime(args.start_year, args.start_month, args.start_day)
+        end_day = datetime(args.end_year, args.end_month, args.end_day)
+        config.future_pred = ((end_day - current_day).days + 1) * 24 + 24 - args.hour
+
+        weather_scores = predict(config, score_config)
 
         print("weather score ", weather_scores)
         print(weather_scores.shape)
