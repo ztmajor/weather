@@ -7,7 +7,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from Util.draw import draw_h
 from Util.adj import idx2chinese_place
-from Util.tool import en_preprocess, de_preprocess, get_now_data, route_recommendation, route_recommendation_multi
+from Util.tool import en_preprocess, de_preprocess, get_now_data, route_recommendation
 from validpreModel import ValidConfig, ValidScoreConfig, test, test_score
 
 
