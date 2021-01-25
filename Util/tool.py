@@ -18,6 +18,7 @@ __all__ = {
     "de_preprocess",
     "get_final_score",
     "route_recommendation",
+    "route_route_recommendation_multi",
 }
 
 
@@ -121,35 +122,77 @@ def de_preprocess(data):
     return data
 
 
-def get_final_score(weather_score):
+def get_final_score(weather_score, site):
     # TODO 天气分数，考虑距离；每天最多推荐景点数；价格等
-
-    final_score = weather_score
+    final_score = []
+    for i, ws in enumerate(weather_score, 1):
+        if i == site:
+            final_score.append(ws)
+        else:
+            final_score.append(ws / adj[site][i])
     return final_score
 
 
-def route_recommendation(scores, step):
-    route = []
-    hour = scores.shape[0]
-    place = [0] * hour
-    scores = scores.T
-    # print("scores: ",scores)
-    # print("start:")
-    for i in range(scores.shape[0]):
+def route_recommendation(weather_scores, step):
+    route = [0]
+    num_places = weather_scores.shape[0]
+    hour = weather_scores.shape[1]
+    place = [0] * num_places
+    weather_scores = weather_scores.T
+    print("trans", weather_scores)
+    # scores = get_final_score(weather_scores)
+    # init start place
+    now = 0
+    for i in range(hour):
         if i % step == 0:
             max_idx = -1
             max_score = -1
-            for j in range(scores.shape[1]):
-                if scores[i][j] > max_score and place[j] != 1:
-                    max_score = scores[i][j]
+            w_score_per_hour = weather_scores[i]
+            f_score_per_hour = get_final_score(w_score_per_hour, now)
+            # print("f_score_per_hour", f_score_per_hour)
+            for j in range(num_places):
+                if f_score_per_hour[j] > max_score and place[j] != 1:
+                    max_score = f_score_per_hour[j]
                     max_idx = j
             place[max_idx] = 1
-            print(scores[i])
+
+            # update site
             route.append(max_idx)
+            now = max_idx
             if len(route) == hour:
                 break
     return route
 
+
+def route_route_recommendation_multi(weather_scores, step, days):
+    route = [0]
+    num_places = weather_scores.shape[0]
+    hour = weather_scores.shape[1]
+    place = [0] * num_places
+    weather_scores = weather_scores.T
+    print("trans", weather_scores)
+    # scores = get_final_score(weather_scores)
+    # init start place
+    now = 0
+    for i in range(hour):
+        if i % step == 0:
+            max_idx = -1
+            max_score = -1
+            w_score_per_hour = weather_scores[i]
+            f_score_per_hour = get_final_score(w_score_per_hour, now)
+            # print("f_score_per_hour", f_score_per_hour)
+            for j in range(num_places):
+                if f_score_per_hour[j] > max_score and place[j] != 1:
+                    max_score = f_score_per_hour[j]
+                    max_idx = j
+            place[max_idx] = 1
+
+            # update site
+            route.append(max_idx)
+            now = max_idx
+            if len(route) == hour:
+                break
+    return route
 
 
 if __name__ == "__main__":
