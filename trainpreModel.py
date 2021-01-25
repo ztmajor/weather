@@ -118,7 +118,7 @@ def train_score(config, data_seq):
 if __name__ == '__main__':
     print("\n------------ 1 load training data ------------")
     # place_name = ["city_museum", "spin_museum", "memorial", "yuhua", "niushou", "confucius", "zhongshan", "president", "ginkgo", "zoo"]
-    place_name = ["city_museum"]
+    place_name = ["xihu"]
     # for place in place_name:
     weather_data = pd.read_csv("Dataset/place/weather_city_museum.csv")
     print("training data:\n", weather_data.head())
