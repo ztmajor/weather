@@ -1,3 +1,11 @@
+# -*- encoding: utf-8 -*-
+"""
+@author: Mei Yu
+@software: PyCharm
+@file: preprocessing.py
+@time: 2021/01/21
+"""
+
 import os
 import pandas as pd
 from Util.tool import split_data_set

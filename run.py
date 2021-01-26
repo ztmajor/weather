@@ -1,3 +1,11 @@
+# -*- encoding: utf-8 -*-
+"""
+@author: Mei Yu / Li WenBo
+@software: PyCharm
+@file: run.py
+@time: 2021/01/22
+"""
+
 import pandas as pd
 import numpy as np
 import argparse

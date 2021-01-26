@@ -1,3 +1,10 @@
+# -*- encoding: utf-8 -*-
+"""
+@author: Mei Yu
+@software: PyCharm
+@file: model.py
+@time: 2021/01/22
+"""
 import torch
 import torch.nn as nn
 from Util.draw import draw_h

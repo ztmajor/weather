@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 """
-@author: Lu Jie
+@author: Lv Jie
 @software: PyCharm
 @file: label.py
 @time: 2021/01/22

@@ -1,3 +1,10 @@
+# -*- encoding: utf-8 -*-
+"""
+@author: Mei Yu
+@software: PyCharm
+@file: validpreModel.py
+@time: 2021/01/22
+"""
 import pandas as pd
 import numpy as np
 import torch

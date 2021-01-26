@@ -1,6 +1,11 @@
+# -*- encoding: utf-8 -*-
+"""
+@author: Mei Yu
+@software: PyCharm
+@file: adj.py
+@time: 2021/01/22
+"""
 import numpy as np
-
-
 
 idx2chinese_place = {
     0: "浙江大学紫金港校区",
