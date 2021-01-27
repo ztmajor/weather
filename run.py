@@ -120,6 +120,21 @@ if __name__ == '__main__':
         if args.nightmode:
             config.future_pred = 24 - args.hour
             weather_scores = predict(config, score_config)
+
+            print("weather score ", weather_scores)
+            print(weather_scores.shape)
+
+            # get route
+            been = [0] * len(config.place_name)
+            route = route_recommendation(weather_scores, 4, been)
+
+            print("-------------------- route recommendation --------------------")
+            print(route)
+            for i, r in enumerate(route):
+                if i == 0:
+                    print(idx2chinese_place[r], end=" ")
+                else:
+                    print("->", idx2chinese_place[r], end=" ")
         elif not args.nightmode and args.hour > 20:
             print("今天太晚了！改日再玩吧")
             # run_days()
