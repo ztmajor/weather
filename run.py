@@ -125,8 +125,8 @@ if __name__ == '__main__':
             print(weather_scores.shape)
 
             # get route
-            been = [0] * len(config.place_name)
-            route = route_recommendation(weather_scores, 4, been)
+            been = [1] + [0] * len(config.place_name)
+            route = route_recommendation(weather_scores, 3, been)
 
             print("-------------------- route recommendation --------------------")
             print(route)
@@ -135,6 +135,7 @@ if __name__ == '__main__':
                     print(idx2chinese_place[r], end=" ")
                 else:
                     print("->", idx2chinese_place[r], end=" ")
+            print("->", idx2chinese_place[0])
         elif not args.nightmode and args.hour > 20:
             print("今天太晚了！改日再玩吧")
             # run_days()
@@ -146,8 +147,8 @@ if __name__ == '__main__':
             print(weather_scores.shape)
 
             # get route
-            been = [0] * len(config.place_name)
-            route = route_recommendation(weather_scores, 4, been)
+            been = [1] + [0] * len(config.place_name)
+            route = route_recommendation(weather_scores, 3, been)
 
             print("-------------------- route recommendation --------------------")
             print(route)
